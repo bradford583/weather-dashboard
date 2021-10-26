@@ -34,7 +34,26 @@ function initPage() {
       currentPicEl.setAttribute("src", "https://openweathermap.org/img/wn/" + weatherPic + "@2x.png");
       currentPicEl.setAttribute("alt", response.data.weather[0].description);
       currentTempEl.innerHTML = "Temperature: " + k2f(response.data.main.temp) + " &#176F";
-      
+      currentHumidityEl.innerHTML = "Humidity: " + response.data.main.humidity + "%";
+      currentWindEl.innerHTML = "Wind Speed " + response.data.wind.speed + " MPH";
+
+      let lat = response.data.coord.lat;
+      let lon = response.data.coord.lon;
+      let UVQueryURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey + "&cnt=1";
+      axios.get(UVQueryURL)
+        .then(function (response) {
+          let UVIndex = document.createElement("span");
+
+          if (response.data[0].value < 4) {
+            UVIndex.setAttribute("class", "badge badge-success");
+          }
+          else if (response.data[0].value < 8) {
+            UVIndex.setAttribute("class", "badge badge-warning");
+          }
+          else {
+            UVIndex.setAttribute("class", "badge badge-danger");
+          }
+        })
     });
   }
 }
