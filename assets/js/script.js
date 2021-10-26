@@ -53,7 +53,34 @@ function initPage() {
           else {
             UVIndex.setAttribute("class", "badge badge-danger");
           }
-        })
+          console.log(response.data[0].value);
+          UVIndex.innerHTML = response.data[0].value;
+          currentUVEl.innerHTML = "UV Index: ";
+          currentUVEl.append(UVIndex);
+        });
+
+        // 5-day
+        let cityID = response.data.id;
+        let forecastQueryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + apiKey;
+        axios.get(forecastQueryURL)
+          .then(function (response) {
+            fivedayEl.classList.remove("d-none");
+
+            const forecastEls = document.querySelectorAll(".forecast");
+            for (i = 0; i < forecastEls.length; i++) {
+              forecastEls[i].innerHTML = "";
+              const forecastIndex = i * 8 + 4;
+              const forecastDate = new Date(response.data.list[forecastIndex].dt * 1000);
+              const forecastDay = forecastDate.getDate();
+              const forecastMonth = forecastDate.getMonth() + 1;
+              const forecastYear = forecastDate.getFullYear();
+              const forecastDateEl = document.createElement("p");
+              
+              forecastDateEl.setAttribute("class", "mt-3 mb-0 forecast-date");
+              forecastDateEl.innerHTML = forecastMonth + "/" + forecastDay + "/" + forecastYear;
+              forecastEls[i].append(forecastDateEl);
+            }
+          })
     });
   }
 }
